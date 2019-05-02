@@ -14,7 +14,7 @@ const User = mongoose.Schema({
         maxlength: 255,
         unique: true
     },
-    email: {
+    password: {
         type: String,
         required: true,
         minlength: 3,
@@ -23,6 +23,7 @@ const User = mongoose.Schema({
 })
 
 function ValidateUser(user) {
+    console.log('hiting');
     const schema = {
         name: Joi.string().min(3).max(50).required(),
         email: Joi.string().min(3).max(255).required().email(),
@@ -31,5 +32,5 @@ function ValidateUser(user) {
     return Joi.validate(user, schema)
 }
 
-module.exports = mongoose.model('User', User);
 exports.validate = ValidateUser;
+exports.User = mongoose.model('User',User);
