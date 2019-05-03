@@ -6,9 +6,9 @@ const _ = require('lodash');
 const bcrypt = require('bcrypt');
 const Joi = require('joi');
 const jwt = require('jsonwebtoken');
-const config= require('config');
+// const config = require('config');
 
-exports.createUser = async (req, res, next) => {
+exports.login = async (req, res, next) => {
     const {
         error
     } = validate(req.body);
@@ -30,8 +30,10 @@ exports.createUser = async (req, res, next) => {
                 error: 'Invalid email or password'
             });
         }
-        const token = User.generateAuthToken();
-        // console.log("*****************",token);
+        // const token = User.generateAuthToken();
+        const token = jwt.sign({
+            email: user.email
+        }, 'jwtPrivateKey');
         res.status(HTTP.OK).send({
             message: 'login successfull',
             token: token
