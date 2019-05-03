@@ -4,7 +4,8 @@ const {
 } = require('../models/user.model');
 const HTTP = require('http-status');
 const _ = require('lodash');
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 exports.createUser = async (req, res, next) => {
     const {
@@ -26,8 +27,11 @@ exports.createUser = async (req, res, next) => {
         const salt = await bcrypt.genSalt(10);
         user.password = await bcrypt.hash(user.password, salt);
         await user.save();
+        const token = jwt.sign({
+            email: user.email
+        }, 'jwtPrivateKey');
         const result = _.pick(user, ['name', 'email']) // it will pick only selected properties
-        res.status(HTTP.OK).send({
+        res.header('x-auth-token', token).status(HTTP.OK).send({
             message: 'User successfully registered',
             user: result
         })
