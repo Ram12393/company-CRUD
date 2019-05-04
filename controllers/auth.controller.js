@@ -1,5 +1,6 @@
 const {
-    User,generateAuthToken
+    User,
+    generateAuthToken
 } = require('../models/user.model');
 const HTTP = require('http-status');
 const _ = require('lodash');
@@ -30,8 +31,10 @@ exports.login = async (req, res, next) => {
                 error: 'Invalid email or password'
             });
         }
-        const token = User.generateAuthToken(req.body.email);
-        // const token = generateAuthToken()
+
+        user = new User();
+        const token = user.generateAuthToken(req.body.email);
+        // const token = User.generateAuthToken(req.body.email);
         res.status(HTTP.OK).send({
             message: 'login successfull',
             token: token
