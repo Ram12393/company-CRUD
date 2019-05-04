@@ -24,13 +24,14 @@ const User = new mongoose.Schema({
     },
 })
 
-User.method.generateAuthToken = function () {
-    const token = jwt.sign({email: user.email}, 'jwtPrivateKey');
+User.static.generateAuthToken = function (a) {
+    const token = jwt.sign({
+        email: this.email
+    }, 'jwtPrivateKey');
     return token;
 }
 
 function ValidateUser(user) {
-    console.log('hiting');
     const schema = {
         name: Joi.string().min(3).max(50).required(),
         email: Joi.string().min(3).max(255).required().email(),
