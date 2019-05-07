@@ -1,11 +1,13 @@
 const {
-    User,generateAuthToken
+    User,
+    generateAuthToken
 } = require('../models/user.model');
 const HTTP = require('http-status');
 const _ = require('lodash');
 const bcrypt = require('bcrypt');
 const Joi = require('joi');
 const jwt = require('jsonwebtoken');
+const auth = require('../middleware/auth')
 // const config = require('config');
 
 exports.login = async (req, res, next) => {
@@ -19,23 +21,21 @@ exports.login = async (req, res, next) => {
         let user = await User.findOne({
             email: req.body.email
         });
-        console.log('errrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr',user);
         if (!user) {
             return res.status(HTTP.BAD_REQUEST).send({
                 error: 'Invalid email or password'
             });
         }
-        console.log("****************************")
         const validPassword = await bcrypt.compare(req.body.password, user.password);
         if (!validPassword) {
             return res.status(HTTP.BAD_REQUEST).send({
                 error: 'Invalid email or password'
             });
         }
-        console.log('*******************8')
-        let User = new User();
-        const token = User.generateAuthToken(req.body.email);
-        // const token = generateAuthToken()
+
+        user = new User();
+        const token = user.generateAuthToken(req.body.email);
+        // const token = User.generateAuthToken(req.body.email);
         res.status(HTTP.OK).send({
             message: 'login successfull',
             token: token
@@ -43,7 +43,11 @@ exports.login = async (req, res, next) => {
     } catch (e) {
         return next();
     }
+}
 
+exports.currentUser = async (req, res, next) => {
+    const user =await User.findOne({email:req.user.email}).select('-password');
+    res.send(user);
 }
 
 function validate(user) {

@@ -24,9 +24,15 @@ const User = new mongoose.Schema({
     },
 })
 
-User.static.generateAuthToken = function (a) {
+User.statics.generateAuthToken = function (email) { // static methods doesn't require instance
     const token = jwt.sign({
-        email: this.email
+        email: email
+    }, 'jwtPrivateKey');
+    return token;
+}
+User.methods.generateAuthToken = function (email) { // methods require instance
+    const token = jwt.sign({
+        email: email
     }, 'jwtPrivateKey');
     return token;
 }
