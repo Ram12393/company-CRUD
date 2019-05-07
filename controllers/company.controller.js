@@ -1,6 +1,6 @@
 const Company = require('../models/company.model');
 const HTTP = require('http-status');
-
+const auth = require('../middleware/auth')
 
 exports.createCompany = async (req, res, next) => {
     try {

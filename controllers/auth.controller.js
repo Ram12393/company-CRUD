@@ -19,17 +19,21 @@ exports.login = async (req, res, next) => {
         let user = await User.findOne({
             email: req.body.email
         });
+        console.log('errrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr',user);
         if (!user) {
             return res.status(HTTP.BAD_REQUEST).send({
                 error: 'Invalid email or password'
             });
         }
+        console.log("****************************")
         const validPassword = await bcrypt.compare(req.body.password, user.password);
         if (!validPassword) {
             return res.status(HTTP.BAD_REQUEST).send({
                 error: 'Invalid email or password'
             });
         }
+        console.log('*******************8')
+        let User = new User();
         const token = User.generateAuthToken(req.body.email);
         // const token = generateAuthToken()
         res.status(HTTP.OK).send({
