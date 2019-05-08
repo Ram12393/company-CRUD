@@ -32,9 +32,9 @@ exports.login = async (req, res, next) => {
                 error: 'Invalid email or password'
             });
         }
-
+        let userObj = user
         user = new User();
-        const token = user.generateAuthToken(req.body.email);
+        const token = user.generateAuthToken(userObj.email, userObj.isAdmin);
         // const token = User.generateAuthToken(req.body.email);
         res.status(HTTP.OK).send({
             message: 'login successfull',
@@ -46,7 +46,9 @@ exports.login = async (req, res, next) => {
 }
 
 exports.currentUser = async (req, res, next) => {
-    const user =await User.findOne({email:req.user.email}).select('-password');
+    const user = await User.findOne({
+        email: req.user.email
+    }).select('-password');
     res.send(user);
 }
 

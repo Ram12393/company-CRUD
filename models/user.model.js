@@ -22,6 +22,7 @@ const User = new mongoose.Schema({
         minlength: 3,
         maxlength: 1024,
     },
+    isAdmin: Boolean
 })
 
 User.statics.generateAuthToken = function (email) { // static methods doesn't require instance
@@ -30,9 +31,10 @@ User.statics.generateAuthToken = function (email) { // static methods doesn't re
     }, 'jwtPrivateKey');
     return token;
 }
-User.methods.generateAuthToken = function (email) { // methods require instance
+User.methods.generateAuthToken = function (email, isAdmin) { // methods require instance
     const token = jwt.sign({
-        email: email
+        email: email,
+        isAdmin: isAdmin
     }, 'jwtPrivateKey');
     return token;
 }
